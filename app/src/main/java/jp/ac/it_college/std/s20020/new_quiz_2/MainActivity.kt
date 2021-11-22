@@ -25,7 +25,9 @@ import kotlin.time.DurationUnit
 
 class MainActivity : AppCompatActivity() {
 
-    private val  URL = "https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=data"
+    //private val  URL = "https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=data"
+
+    private lateinit var _helper: DatabaseHelper
 
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +35,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //データベース接続オブジェクトを取得
+        binding.button.setOnClickListener() {
+//            val db = _helper.writableDatabase
+
+            binding.test.text = "taiga"
+        }
+
+//       println(db)
 
     }
 
@@ -41,6 +51,12 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         getVersion("https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=version")
 
+    }
+
+    override fun onDestroy() {
+        //DBヘルパーオブジェクトの解放
+        _helper.close()
+        super.onDestroy()
     }
 
     //versionを取得
@@ -119,6 +135,10 @@ class MainActivity : AppCompatActivity() {
         val reader = BufferedReader(InputStreamReader(stream, "UTF-8"))
         return reader.readText()
     }
+
+
+
+
 
 
 
