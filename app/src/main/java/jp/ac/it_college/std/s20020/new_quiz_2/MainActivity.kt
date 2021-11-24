@@ -35,10 +35,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //データベース接続オブジェクトを取得
-        binding.button.setOnClickListener() {
-//            val db = _helper.writableDatabase
+        //DatabaseHelperオブジェクトを生成
+        _helper = DatabaseHelper(this)
 
+
+
+
+        binding.button.setOnClickListener() {
+
+            //データベース接続オブジェクトを取得
+            val db = _helper.writableDatabase
+
+            println(db)
             binding.test.text = "taiga"
         }
 
@@ -76,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     private fun getDate(url: String) {
         lifecycleScope.launch {
             val result = getJsonBack(url)
+
             getDatePost(result)
         }
     }
@@ -125,15 +134,39 @@ class MainActivity : AppCompatActivity() {
     //自分でつくる
     @UiThread
     private fun getDatePost(result: String) {
-        val rootDate = JSONArray(result)
 
-        //ここのデータがすべてある。now
-        println(rootDate)
+        val rootJSON = JSONArray(result)
+        println(rootJSON)
+        val id = rootJSON.getJSONObject(0).getString("id")
+        val question = rootJSON.getJSONObject(0).getString("question")
+        val answers = rootJSON.getJSONObject(0).getInt("answers")
+        val choices = rootJSON.getJSONObject(0).getJSONArray("choices")
+        println(id)
+        println(question)
+        println(answers)
+        println(choices[0])
+
+
+
+
+//        val question = rootDate.getString("question")
+//        val answer = rootDate.getInt("answer")
+//        val choices = rootDate.getJSONArray("choices")
+
     }
 
     private fun extedString(stream: InputStream): String {
         val reader = BufferedReader(InputStreamReader(stream, "UTF-8"))
         return reader.readText()
+    }
+
+    private inner class json(result: String) : Runnable {
+        val _result = result
+        @UiThread
+        override fun run() {
+
+
+        }
     }
 
 

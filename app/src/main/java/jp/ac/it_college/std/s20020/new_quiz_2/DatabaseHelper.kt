@@ -38,7 +38,7 @@ class DatabaseHelper(context: Context, ) : SQLiteOpenHelper(
 
     }
 
-    //DATABASE_VIRSIONが大きくなったときに実行される
+    //DATABASE_VIRSIONが新しくなったときに実行される
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
 
     }
