@@ -25,7 +25,6 @@ import kotlin.time.DurationUnit
 
 class MainActivity : AppCompatActivity() {
 
-    //private val  URL = "https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=data"
 
     private lateinit var _helper: DatabaseHelper
 
@@ -34,23 +33,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //DatabaseHelperオブジェクトを生成
-        _helper = DatabaseHelper(this)
-
-
-
-
-        binding.button.setOnClickListener() {
-
-            //データベース接続オブジェクトを取得
-            val db = _helper.writableDatabase
-
-            println(db)
-            binding.test.text = "taiga"
-        }
-
-//       println(db)
 
     }
 
@@ -137,21 +119,54 @@ class MainActivity : AppCompatActivity() {
 
         val rootJSON = JSONArray(result)
         println(rootJSON)
-        val id = rootJSON.getJSONObject(0).getString("id")
+        val id = rootJSON.getJSONObject(0).getLong("id")
         val question = rootJSON.getJSONObject(0).getString("question")
-        val answers = rootJSON.getJSONObject(0).getInt("answers")
+        val answers = rootJSON.getJSONObject(0).getLong("answers")
         val choices = rootJSON.getJSONObject(0).getJSONArray("choices")
+        val choices_1 = choices[0].toString()
+        val choices_2 = choices[1].toString()
+        val choices_3 = choices[2].toString()
+        val choices_4 = choices[3].toString()
+        val choices_5 = choices[4].toString()
+        val choices_6 = choices[5].toString()
         println(id)
         println(question)
         println(answers)
         println(choices[0])
+        println(choices[1])
+        println(choices[2])
+        println(choices[3])
+        println(choices[4])
+        println(choices[5])
 
 
+        //DatabaseHelperオブジェクトを生成
+        _helper = DatabaseHelper(this)
 
+        //データベース接続オブジェクトを取得
+        val db = _helper.writableDatabase
 
-//        val question = rootDate.getString("question")
-//        val answer = rootDate.getInt("answer")
-//        val choices = rootDate.getJSONArray("choices")
+        val insert = """INSERT INTO Quiz
+            (_id, question, answers, choices_1, choices_2, choices_3,choices_4, choices_5, choices_6)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """.trimIndent()
+
+        //SQL文字列をもとにプリペアドステートメントを取得
+        val stmt = db.compileStatement(insert)
+
+        //変数のバイド。
+        stmt.bindLong(1, id)
+        stmt.bindString(2, question)
+        stmt.bindLong(3, answers)
+        stmt.bindString(4, choices_1)
+        stmt.bindString(5, choices_2)
+        stmt.bindString(6, choices_3)
+        stmt.bindString(7, choices_4)
+        stmt.bindString(8, choices_5)
+        stmt.bindString(9, choices_6)
+
+        stmt.executeInsert()
+
 
     }
 
@@ -160,14 +175,7 @@ class MainActivity : AppCompatActivity() {
         return reader.readText()
     }
 
-    private inner class json(result: String) : Runnable {
-        val _result = result
-        @UiThread
-        override fun run() {
 
-
-        }
-    }
 
 
 

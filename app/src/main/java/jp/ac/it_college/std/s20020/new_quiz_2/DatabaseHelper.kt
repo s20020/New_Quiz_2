@@ -19,9 +19,9 @@ class DatabaseHelper(context: Context, ) : SQLiteOpenHelper(
         //テーブル作成用SQL文字列の作成
         val createTable_main = """
             CREATE TABLE Quiz (
-                _id INTEGER PRIMARY KEY,
+                _id LONG PRIMARY KEY,
                 question TEXT,
-                answer INTEGER,
+                answers LONG,
                 choices_1 TEXT,
                 choices_2 TEXT,
                 choices_3 TEXT,
