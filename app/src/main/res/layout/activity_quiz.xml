@@ -17,41 +17,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4">
 
-        <CheckBox
-            android:id="@+id/checkBox3"
+        <Button
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox" />
 
-        <CheckBox
-            android:id="@+id/checkBox4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CheckBox" />
 
-        <CheckBox
-            android:id="@+id/checkBox5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CheckBox" />
+            android:backgroundTint="#C8C8C8" />
 
-        <CheckBox
-            android:id="@+id/checkBox6"
+        <Button
+            android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox" />
+            android:backgroundTint="#C8C8C8" />
 
-        <CheckBox
-            android:id="@+id/checkBox7"
+        <Button
+            android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox" />
+            android:backgroundTint="#C8C8C8" />
 
-        <CheckBox
-            android:id="@+id/checkBox2"
+        <Button
+            android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox" />
+            android:backgroundTint="#C8C8C8" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#C8C8C8" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#C8C8C8" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -62,7 +64,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/question_text"
         android:layout_width="289dp"
         android:layout_height="146dp"
         android:layout_marginTop="44dp"
