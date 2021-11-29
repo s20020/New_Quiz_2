@@ -12,9 +12,11 @@ class Quiz : AppCompatActivity() {
 
     private lateinit var _helper: DatabaseHelper
     private var q_list = mutableListOf<String>()
+    private var shuffl_list = mutableListOf<Int>()
     private var on_list = mutableListOf<Int>()
     private var answer_num = 0
-    private var answer_list = mutableListOf<String>()
+    private var answer_list = mutableListOf<Int>()
+    private var shuffled_list = mutableListOf<Int>()
     private var total_time : Long = 0
     private var total_score = 0
 
@@ -36,6 +38,7 @@ class Quiz : AppCompatActivity() {
         println(ram)
 
 
+        //ランダムに問題を取得
         val select = """
             SELECT _id, question, answers, choices_1, choices_2, choices_3, choices_4, choices_5, choices_6 FROM Quiz
             WHERE _id = ${ram}
@@ -55,7 +58,7 @@ class Quiz : AppCompatActivity() {
         val c_question = c.getColumnIndex("question")
         val question = c.getString(c_question)
         val c_answers = c.getColumnIndex("answers")
-        val answer_num = c.getInt(c_answers)
+        answer_num = c.getInt(c_answers)
         val c_choices_1 = c.getColumnIndex("choices_1")
         val choices_1 = c.getString(c_choices_1)
         val c_choices_2 = c.getColumnIndex("choices_2")
@@ -69,6 +72,7 @@ class Quiz : AppCompatActivity() {
         val c_choices_6 = c.getColumnIndex("choices_6")
         val choices_6 = c.getString(c_choices_6)
 
+
         println(id)
         println(question)
         println(answer_num)
@@ -79,6 +83,9 @@ class Quiz : AppCompatActivity() {
         println(choices_5)
         println(choices_6)
 
+
+
+        //選択するリスト(String)
         q_list.run{
             this.add(choices_1)
             this.add(choices_2)
@@ -89,10 +96,21 @@ class Quiz : AppCompatActivity() {
             if(choices_6 != "") this.add(choices_6)
         }
 
-        var i = 0
-        while(i < answer_num) {
-            answer_list.add(q_list[i])
-            i++
+        println(q_list)
+
+        //q_listのインデックスのリストを作成。(Int)  ＜ー　シャッフルするため。
+        var i_0 = 0
+        while(i_0 < q_list.size){
+            shuffl_list.add(i_0)
+            i_0++
+        }
+        println(shuffl_list)
+
+        //正解のインデックスを保管するリスト.(Int)
+        var i_1 = 0
+        while(i_1 < answer_num) {
+            answer_list.add(shuffl_list[i_1])
+            i_1++
         }
         println(answer_list)
 
@@ -100,20 +118,20 @@ class Quiz : AppCompatActivity() {
 
 
         //選択肢をシャッフル
-        val num = q_list.shuffled()
-        println(num.size)
-        println(num)
+        val shuffled_list = shuffl_list.shuffled()
+        println(shuffled_list.size)
+        println(shuffled_list)
 
 
         //各ボタンに値をセット
         binding.questionText.text = question
-        binding.button1.text = num[0]
-        binding.button2.text = num[1]
-        binding.button3.text = num[2]
-        binding.button4.text = num[3]
+        binding.button1.text = q_list[shuffled_list[0]]
+        binding.button2.text = q_list[shuffled_list[1]]
+        binding.button3.text = q_list[shuffled_list[2]]
+        binding.button4.text = q_list[shuffled_list[3]]
         //テキストのない選択肢はボタンごと消す。
-        if(num.size > 4) binding.button5.text = num[4] else binding.button5.visibility = View.INVISIBLE
-        if(num.size > 5) binding.button6.text = num[5] else binding.button6.visibility = View.INVISIBLE
+        if(shuffled_list.size > 4) binding.button5.text = q_list[shuffled_list[4]] else binding.button5.visibility = View.INVISIBLE
+        if(shuffled_list.size > 5) binding.button6.text = q_list[shuffled_list[5]] else binding.button6.visibility = View.INVISIBLE
 
         //選択肢にテキストが入っていないものは削除する
 
@@ -123,16 +141,17 @@ class Quiz : AppCompatActivity() {
 
         //ボタンが押されたときの処理
         binding.okButton.setOnClickListener {
+            colection()
 
         }
 
         //ボタンを押したときのonClickを発動
-        binding.button1.setOnClickListener { onClick(1)}
-        binding.button2.setOnClickListener { onClick(2)}
-        binding.button3.setOnClickListener { onClick(3)}
-        binding.button4.setOnClickListener { onClick(4)}
-        binding.button5.setOnClickListener { onClick(5)}
-        binding.button6.setOnClickListener { onClick(6)}
+        binding.button1.setOnClickListener { onClick(shuffled_list[0], 1)}
+        binding.button2.setOnClickListener { onClick(shuffled_list[1], 2)}
+        binding.button3.setOnClickListener { onClick(shuffled_list[2],3)}
+        binding.button4.setOnClickListener { onClick(shuffled_list[3],4)}
+        binding.button5.setOnClickListener { onClick(shuffled_list[4],5)}
+        binding.button6.setOnClickListener { onClick(shuffled_list[5],6)}
 
 
 
@@ -142,32 +161,39 @@ class Quiz : AppCompatActivity() {
 
 
     //それぞれのボタンのリスト設定
-    fun onClick (i:Int) {
+    //選択リストの場所、ボタンの位置を受け取る。
+    fun onClick (answer: Int, i: Int) {
 
         //ボタンが選択されていないされている場合
-        if (i in on_list) {
-            on_list.remove(i)
-            onColor(i)
+        if (answer in on_list) {
+            on_list.remove(answer)
+
+            offColor(i)
             println(on_list)
+            println(on_list.size)
 
         }
 
         //すでにanswer個に達している場合
-        else if(on_list.size > answer_num) {
+        else if (on_list.size  > answer_num - 1) {
+            println(on_list.size)
+            println(answer_num)
+            return
 
         }
         //ボタンが選択されていない場合
         else {
 
-            on_list.add(i)
-            offColor(i)
+            on_list.add(answer)
+            onColor(i)
             println(on_list)
+            println(on_list.size)
         }
 
     }
 
     //ボタンが選択されたときの色設定
-    fun onColor(i: Int) {
+    fun offColor(i: Int) {
         val color = Color.rgb(200, 200, 200)
         when(i) {
             1 -> binding.button1.setBackgroundColor(color)
@@ -182,7 +208,7 @@ class Quiz : AppCompatActivity() {
 
 
     //ボタンが解除されたときの色設定
-    fun offColor(i: Int) {
+    fun onColor(i: Int) {
         val color = Color.rgb(0,0, 255)
         when(i) {
             1 -> binding.button1.setBackgroundColor(color)
@@ -196,6 +222,22 @@ class Quiz : AppCompatActivity() {
     }
 
     //決定ボタンが押されたときの処理。
+    fun colection() {
+        var i = 0
+        var total = 0
+        while(i < answer_num) {
+            if(on_list[i] in answer_list)
+                total++
+            i++
+        }
+        println(total)
+        println(answer_num)
+        if(total == answer_num)
+            binding.marubatu.text = "⭕"
+        else
+            binding.marubatu.text = "❌"
+
+    }
 
 
 

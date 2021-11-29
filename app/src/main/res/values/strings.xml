@@ -2,5 +2,6 @@
     <string name="app_name">New_Quiz_2</string>
     <string name="start_btn">スタート</string>
     <string name="wait_text">データを取得中。。。</string>
+    <string name="num_text">つ選択</string>
 
 </resources>
