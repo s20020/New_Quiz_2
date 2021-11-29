@@ -41,7 +41,7 @@ class Quiz : AppCompatActivity() {
         //ランダムに問題を取得
         val select = """
             SELECT _id, question, answers, choices_1, choices_2, choices_3, choices_4, choices_5, choices_6 FROM Quiz
-            WHERE _id = ${ram}
+            WHERE _id = 1041
         """.trimIndent()
 
 //        var stmt = db.compileStatement(select)
