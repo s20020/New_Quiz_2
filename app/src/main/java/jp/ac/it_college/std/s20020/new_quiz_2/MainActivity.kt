@@ -1,5 +1,6 @@
 package jp.ac.it_college.std.s20020.new_quiz_2
 
+import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -33,6 +34,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.startbutton.setOnClickListener(){
+            next()
+        }
 
     }
 
@@ -191,10 +196,13 @@ class MainActivity : AppCompatActivity() {
         return reader.readText()
     }
 
+    private fun next() {
+        var time = 0
+        var score = 0
 
-
-
-
+        val intent = Intent(this, Quiz::class.java)
+        startActivity(intent)
+    }
 
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.ac.it_college.std.s20020.new_quiz_2">
-    <!-- http通信するよ-->
+    <!-- http通信するよ -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.New_Quiz_2">
         <activity
+            android:name=".Quiz"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -21,8 +24,5 @@
             </intent-filter>
         </activity>
     </application>
-
-
-
 
 </manifest>

@@ -10,6 +10,7 @@
         android:id="@+id/startbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,13 +29,15 @@
 
     <TextView
         android:id="@+id/test"
-        android:layout_width="150dp"
-        android:layout_height="66dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        android:textSize="34sp"
+        android:layout_width="301dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="80dp"
+        android:text="@string/wait_text"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
