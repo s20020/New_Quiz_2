@@ -11,8 +11,12 @@ import jp.ac.it_college.std.s20020.new_quiz_2.databinding.ActivityQuizBinding
 class Quiz : AppCompatActivity() {
 
     private lateinit var _helper: DatabaseHelper
-    private var off_list = mutableListOf<Int>()
+    private var q_list = mutableListOf<String>()
     private var on_list = mutableListOf<Int>()
+    private var answer_num = 0
+    private var answer_list = mutableListOf<String>()
+    private var total_time : Long = 0
+    private var total_score = 0
 
     private lateinit var binding: ActivityQuizBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +33,6 @@ class Quiz : AppCompatActivity() {
 
         //ランダムな数字を生成
         var ram = (1001..1075).random()
-
         println(ram)
 
 
@@ -43,6 +46,7 @@ class Quiz : AppCompatActivity() {
 //        stmt.bindLong(1, ram.toLong())
 
 
+        //データベースのそれぞれの値を変数に格納。
         var c = db.rawQuery(select, null)
         c.moveToNext()
 
@@ -51,7 +55,7 @@ class Quiz : AppCompatActivity() {
         val c_question = c.getColumnIndex("question")
         val question = c.getString(c_question)
         val c_answers = c.getColumnIndex("answers")
-        val answers = c.getInt(c_answers)
+        val answer_num = c.getInt(c_answers)
         val c_choices_1 = c.getColumnIndex("choices_1")
         val choices_1 = c.getString(c_choices_1)
         val c_choices_2 = c.getColumnIndex("choices_2")
@@ -67,7 +71,7 @@ class Quiz : AppCompatActivity() {
 
         println(id)
         println(question)
-        println(answers)
+        println(answer_num)
         println(choices_1)
         println(choices_2)
         println(choices_3)
@@ -75,24 +79,54 @@ class Quiz : AppCompatActivity() {
         println(choices_5)
         println(choices_6)
 
+        q_list.run{
+            this.add(choices_1)
+            this.add(choices_2)
+            this.add(choices_3)
+            this.add(choices_4)
+            //テキストのないものはリストからはずす。
+            if(choices_5 != "") this.add(choices_5)
+            if(choices_6 != "") this.add(choices_6)
+        }
 
+        var i = 0
+        while(i < answer_num) {
+            answer_list.add(q_list[i])
+            i++
+        }
+        println(answer_list)
+
+
+
+
+        //選択肢をシャッフル
+        val num = q_list.shuffled()
+        println(num.size)
+        println(num)
+
+
+        //各ボタンに値をセット
         binding.questionText.text = question
-        binding.button1.text = choices_1
-        binding.button2.text = choices_2
-        binding.button3.text = choices_3
-        binding.button4.text = choices_4
-        binding.button5.text = choices_5
-        binding.button6.text = choices_6
+        binding.button1.text = num[0]
+        binding.button2.text = num[1]
+        binding.button3.text = num[2]
+        binding.button4.text = num[3]
+        //テキストのない選択肢はボタンごと消す。
+        if(num.size > 4) binding.button5.text = num[4] else binding.button5.visibility = View.INVISIBLE
+        if(num.size > 5) binding.button6.text = num[5] else binding.button6.visibility = View.INVISIBLE
 
         //選択肢にテキストが入っていないものは削除する
-        if(choices_5 == "") binding.button5.visibility = View.INVISIBLE
-        if(choices_6 == "") binding.button6.visibility = View.INVISIBLE
 
 
 
 
 
-        //ボタンを押したときの処理
+        //ボタンが押されたときの処理
+        binding.okButton.setOnClickListener {
+
+        }
+
+        //ボタンを押したときのonClickを発動
         binding.button1.setOnClickListener { onClick(1)}
         binding.button2.setOnClickListener { onClick(2)}
         binding.button3.setOnClickListener { onClick(3)}
@@ -107,13 +141,24 @@ class Quiz : AppCompatActivity() {
 
 
 
+    //それぞれのボタンのリスト設定
     fun onClick (i:Int) {
 
+        //ボタンが選択されていないされている場合
         if (i in on_list) {
             on_list.remove(i)
             onColor(i)
             println(on_list)
-        }else {
+
+        }
+
+        //すでにanswer個に達している場合
+        else if(on_list.size > answer_num) {
+
+        }
+        //ボタンが選択されていない場合
+        else {
+
             on_list.add(i)
             offColor(i)
             println(on_list)
@@ -121,7 +166,7 @@ class Quiz : AppCompatActivity() {
 
     }
 
-    //ボタンが選択されたときの処理
+    //ボタンが選択されたときの色設定
     fun onColor(i: Int) {
         val color = Color.rgb(200, 200, 200)
         when(i) {
@@ -136,7 +181,7 @@ class Quiz : AppCompatActivity() {
     }
 
 
-    //ボタンが解除されたときの処理
+    //ボタンが解除されたときの色設定
     fun offColor(i: Int) {
         val color = Color.rgb(0,0, 255)
         when(i) {
@@ -149,6 +194,9 @@ class Quiz : AppCompatActivity() {
         }
 
     }
+
+    //決定ボタンが押されたときの処理。
+
 
 
 }
