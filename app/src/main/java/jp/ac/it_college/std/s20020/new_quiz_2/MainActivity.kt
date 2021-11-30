@@ -109,14 +109,24 @@ class MainActivity : AppCompatActivity() {
     //自分でつくる
     @UiThread
     private fun getVersionPost(result: String) {
-        val oldVersion = "20211118"
+        var oldVersion = "20211130"
         println(oldVersion)
         val newVersion = JSONObject(result).getString("version")
         println(newVersion)
         if (newVersion != oldVersion){
+            _helper = DatabaseHelper(this)
+            val db = _helper.writableDatabase
+            val delete = """DELETE FROM Quiz;
+        """.trimIndent()
+            val stmt = db.compileStatement(delete)
+            stmt.executeUpdateDelete()
+
+            oldVersion = newVersion
+
+
             getDate("https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=data")
         }
-        binding.textView.text = newVersion
+        binding.textView.text = oldVersion
 
     }
 
@@ -128,12 +138,17 @@ class MainActivity : AppCompatActivity() {
         _helper = DatabaseHelper(this)
 
 
+
+
+
+
         val rootJSON = JSONArray(result)
         println(rootJSON)
 
         var i = 0
 
-        while(i < 75){
+        while(i < rootJSON.length()){
+
 
             val id = rootJSON.getJSONObject(i).getLong("id")
             val question = rootJSON.getJSONObject(i).getString("question")
@@ -145,20 +160,13 @@ class MainActivity : AppCompatActivity() {
             val choices_4 = choices[3].toString()
             val choices_5 = choices[4].toString()
             val choices_6 = choices[5].toString()
-//            println(id)
-//            println(question)
-//            println(answers)
-//            println(choices[0])
-//            println(choices[1])
-//            println(choices[2])
-//            println(choices[3])
-//            println(choices[4])
-//            println(choices[5])
-
 
 
             //データベース接続オブジェクトを取得
             val db = _helper.writableDatabase
+
+
+
 
             val insert = """INSERT INTO Quiz
             (_id, question, answers, choices_1, choices_2, choices_3,choices_4, choices_5, choices_6)
