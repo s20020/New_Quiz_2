@@ -57,6 +57,7 @@ class Quiz : AppCompatActivity() {
         }
     }
 
+
     //選択されたら色をかえる。on_listに選択されたもののindexを格納。
     fun onClick (answer: Int, i: Int) {
 
@@ -110,26 +111,39 @@ class Quiz : AppCompatActivity() {
 
     //決定ボタンが押されたときの処理。
     fun colection() {
-        //正解かどうか確かめ。
+        index += 1
+        timer.cancel()
+        //on_listとanswer_listが等しいか確認。
         var i = 0
         var total = 0
+        println(answer_num)
         //on_listとanswer_listの照合数.
         while(i < answer_num) {
-            if(on_list[i] in answer_list)
+            if(on_list.size < answer_num){
+                total = 0
+            }
+            else if(on_list[i] in answer_list)
                 total++
             i++
         }
 
-        //全部正解。
+        println(total)
+        //正解
         if(total == answer_num){
-            total_score+1
+            total_score+=1
             binding.marubatu.text = "⭕"
         }
         //不正解
         else{
             binding.marubatu.text = "❌"
         }
-        which()
+
+        //１秒遅らせるためのインスタンス
+        val handler = Handler(Looper.getMainLooper())
+        //1秒後にwhich()
+        handler.postDelayed( {
+            which()
+        }, 1000)
     }
 
     //１０回ループを超えたとき、結果発表画面へ遷移
@@ -141,16 +155,15 @@ class Quiz : AppCompatActivity() {
     }
 
     fun which() {
-        timer.cancel()
-        index += 1
         if(index >= 11){
             val end = System.currentTimeMillis()
             println(start)
             println(end)
-            total_time = end - start
+            total_time = (end/1000) - (start/1000)
             ResultChange(total_score, total_time)
         }
         else {
+            println(total_score)
             onChange()
         }
     }
@@ -174,7 +187,7 @@ class Quiz : AppCompatActivity() {
         on_list.clear()
         println(q_list)
 
-//        timer.start()
+        timer.start()
 
         //DatabaseHelperオブジェクトを生成
         _helper = DatabaseHelper(this)
@@ -283,15 +296,7 @@ class Quiz : AppCompatActivity() {
 
         binding.okButton.setOnClickListener{ colection() }
 
-
     }
-
-
-
-
-
-
-
 }
 
 
