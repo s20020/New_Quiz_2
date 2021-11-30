@@ -1,9 +1,8 @@
 package jp.ac.it_college.std.s20020.new_quiz_2
 
-import android.content.DialogInterface
+
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,18 +10,18 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import jp.ac.it_college.std.s20020.new_quiz_2.databinding.ActivityQuizBinding
-import kotlin.concurrent.timer
+
 
 class Quiz : AppCompatActivity() {
 
     private lateinit var _helper: DatabaseHelper
-    private var q_list = mutableListOf<String>()
-    private var shuffl_list = mutableListOf<Int>()
-    private var on_list = mutableListOf<Int>()
-    private var answer_num = 0
-    private var answer_list = mutableListOf<Int>()
-    private var total_time = 0L
-    private var total_score = 0
+    private var qlist = mutableListOf<String>()
+    private var shuffllist = mutableListOf<Int>()
+    private var onlist = mutableListOf<Int>()
+    private var answernum = 0
+    private var answerlist = mutableListOf<Int>()
+    private var totaltime = 0L
+    private var totalscore = 0
     private var index = 1
     private var start = 0L
 
@@ -44,7 +43,7 @@ class Quiz : AppCompatActivity() {
     }
 
     //タイマーのインスタンスを生成
-    val timer = object : CountDownTimer(10000,
+    private val timer = object : CountDownTimer(10000,
         1000) {
         override fun onTick(millisUntilFinished: Long) {
             val second = millisUntilFinished / 1000L % 60L
@@ -59,30 +58,30 @@ class Quiz : AppCompatActivity() {
 
 
     //選択されたら色をかえる。on_listに選択されたもののindexを格納。
-    fun onClick (answer: Int, i: Int) {
+    private fun onClick (answer: Int, i: Int) {
 
         //ボタンが選択されていないされている場合
-        if (answer in on_list) {
-            on_list.remove(answer)
+        if (answer in onlist) {
+            onlist.remove(answer)
             offColor(i)
-            println(on_list)
+            println(onlist)
         }
 
         //すでにanswer個に達している場合
-        else if (on_list.size  > answer_num - 1) {
+        else if (onlist.size  > answernum - 1) {
             return
         }
         //ボタンが選択されていない場合
         else {
-            on_list.add(answer)
+            onlist.add(answer)
             onColor(i)
-            println(on_list)
+            println(onlist)
         }
 
     }
 
     //ボタンが解除されたときの色設定
-    fun offColor(i: Int) {
+    private fun offColor(i: Int) {
         val color = Color.rgb(200, 200, 200)
         when(i) {
             1 -> binding.button1.setBackgroundColor(color)
@@ -96,7 +95,7 @@ class Quiz : AppCompatActivity() {
     }
 
     //ボタンが選択されたときの色設定
-    fun onColor(i: Int) {
+    private fun onColor(i: Int) {
         val color = Color.rgb(0,0, 255)
         when(i) {
             1 -> binding.button1.setBackgroundColor(color)
@@ -110,27 +109,27 @@ class Quiz : AppCompatActivity() {
     }
 
     //決定ボタンが押されたときの処理。
-    fun colection() {
+    private fun colection() {
         index += 1
         timer.cancel()
         //on_listとanswer_listが等しいか確認。
         var i = 0
         var total = 0
-        println(answer_num)
+        println(answernum)
         //on_listとanswer_listの照合数.
-        while(i < answer_num) {
-            if(on_list.size < answer_num){
+        while(i < answernum) {
+            if(onlist.size < answernum){
                 total = 0
             }
-            else if(on_list[i] in answer_list)
+            else if(onlist[i] in answerlist)
                 total++
             i++
         }
 
         println(total)
         //正解
-        if(total == answer_num){
-            total_score+=1
+        if(total == answernum){
+            totalscore+=1
             binding.marubatu.text = "⭕"
         }
         //不正解
@@ -147,28 +146,28 @@ class Quiz : AppCompatActivity() {
     }
 
     //１０回ループを超えたとき、結果発表画面へ遷移
-    fun ResultChange( score: Int, time: Long) {
+    private fun resultChange() {
         val intent = Intent(this, ResultActivity::class.java)
-            intent.putExtra("TOTAL_SCORE",total_score.toString())
-            intent.putExtra("TOTAL_TIME", total_time.toString())
+            intent.putExtra("TOTAL_SCORE",totalscore.toString())
+            intent.putExtra("TOTAL_TIME", totaltime.toString())
         startActivity(intent)
     }
 
-    fun which() {
+    private fun which() {
         if(index >= 11){
             val end = System.currentTimeMillis()
             println(start)
             println(end)
-            total_time = (end/1000) - (start/1000)
-            ResultChange(total_score, total_time)
+            totaltime = (end/1000) - (start/1000)
+            resultChange()
         }
         else {
-            println(total_score)
+            println(totalscore)
             onChange()
         }
     }
 
-    fun onChange() {
+    private fun onChange() {
 
         //クリア操作
         val color = Color.rgb(200, 200, 200)
@@ -181,11 +180,11 @@ class Quiz : AppCompatActivity() {
             button5.setBackgroundColor(color)
             button6.setBackgroundColor(color)
         }
-        answer_list.clear()
-        q_list.clear()
-        shuffl_list.clear()
-        on_list.clear()
-        println(q_list)
+        answerlist.clear()
+        qlist.clear()
+        shuffllist.clear()
+        onlist.clear()
+        println(qlist)
 
         timer.start()
 
@@ -197,7 +196,7 @@ class Quiz : AppCompatActivity() {
         val db = _helper.writableDatabase
 
         //ランダムな数字を生成
-        var ram = (1001..1075).random()
+        val ram = (1001..1075).random()
         println(ram)
 
 
@@ -209,27 +208,27 @@ class Quiz : AppCompatActivity() {
 
 
         //データベースのそれぞれの値を変数に格納。
-        var c = db.rawQuery(select, null)
+        val c = db.rawQuery(select, null)
         c.moveToNext()
 
-        val c_id = c.getColumnIndex("_id")
-        val id = c.getString(c_id)
-        val c_question = c.getColumnIndex("question")
-        val question = c.getString(c_question)
-        val c_answers = c.getColumnIndex("answers")
-        answer_num = c.getInt(c_answers)
-        val c_choices_1 = c.getColumnIndex("choices_1")
-        val choices_1 = c.getString(c_choices_1)
-        val c_choices_2 = c.getColumnIndex("choices_2")
-        val choices_2 = c.getString(c_choices_2)
-        val c_choices_3 = c.getColumnIndex("choices_3")
-        val choices_3 = c.getString(c_choices_3)
-        val c_choices_4 = c.getColumnIndex("choices_4")
-        val choices_4 = c.getString(c_choices_4)
-        val c_choices_5 = c.getColumnIndex("choices_5")
-        val choices_5 = c.getString(c_choices_5)
-        val c_choices_6 = c.getColumnIndex("choices_6")
-        val choices_6 = c.getString(c_choices_6)
+//        val c_id = c.getColumnIndex("_id")
+//        val id = c.getString(c_id)
+        val c1question = c.getColumnIndex("question")
+        val question = c.getString(c1question)
+        val c1answers = c.getColumnIndex("answers")
+        answernum = c.getInt(c1answers)
+        val c1choices1 = c.getColumnIndex("choices_1")
+        val choices1 = c.getString(c1choices1)
+        val c1choices2 = c.getColumnIndex("choices_2")
+        val choices2 = c.getString(c1choices2)
+        val c1choices3 = c.getColumnIndex("choices_3")
+        val choices3 = c.getString(c1choices3)
+        val c1choices4 = c.getColumnIndex("choices_4")
+        val choices4 = c.getString(c1choices4)
+        val c1choices5 = c.getColumnIndex("choices_5")
+        val choices5 = c.getString(c1choices5)
+        val c1choices6 = c.getColumnIndex("choices_6")
+        val choices6 = c.getString(c1choices6)
 
 //        println(answer_num)
 //        println(choices_1)
@@ -241,49 +240,49 @@ class Quiz : AppCompatActivity() {
 
 
         //選択肢の文字列リスト -> q_list
-        q_list.run {
-            this.add(choices_1)
-            this.add(choices_2)
-            this.add(choices_3)
-            this.add(choices_4)
+        qlist.run {
+            this.add(choices1)
+            this.add(choices2)
+            this.add(choices3)
+            this.add(choices4)
             //テキストのないものはリストからはずす。
-            if (choices_5 != "") this.add(choices_5)
-            if (choices_6 != "") this.add(choices_6)
+            if (choices5 != "") this.add(choices5)
+            if (choices6 != "") this.add(choices6)
         }
-        println(q_list)
+        println(qlist)
 
         //q_listのインデックスのshuffl_listを作成。(Int)  ＜ー　シャッフルするため。
         var i_0 = 0
-        while (i_0 < q_list.size) {
-            shuffl_list.add(i_0)
+        while (i_0 < qlist.size) {
+            shuffllist.add(i_0)
             i_0++
         }
-        println(shuffl_list)
+        println(shuffllist)
 
 
         //anser_listに正解を保存。
         var i_1 = 0
-        while (i_1 < answer_num) {
-            answer_list.add(shuffl_list[i_1])
+        while (i_1 < answernum) {
+            answerlist.add(shuffllist[i_1])
             i_1++
         }
-        println(answer_list)
+        println(answerlist)
 
         //shuffl_listをシャッフルしたshuffled_listを作成。
-        val shuffled_list = shuffl_list.shuffled()
+        val shuffled_list = shuffllist.shuffled()
         println(shuffled_list)
 
         //各ボタンに値をセット
         binding.questionText.text = question
-        binding.button1.text = q_list[shuffled_list[0]]
-        binding.button2.text = q_list[shuffled_list[1]]
-        binding.button3.text = q_list[shuffled_list[2]]
-        binding.button4.text = q_list[shuffled_list[3]]
+        binding.button1.text = qlist[shuffled_list[0]]
+        binding.button2.text = qlist[shuffled_list[1]]
+        binding.button3.text = qlist[shuffled_list[2]]
+        binding.button4.text = qlist[shuffled_list[3]]
         //テキストのない選択肢はボタンごと消す。
         if (shuffled_list.size > 4) binding.button5.text =
-            q_list[shuffled_list[4]] else binding.button5.visibility = View.INVISIBLE
+            qlist[shuffled_list[4]] else binding.button5.visibility = View.INVISIBLE
         if (shuffled_list.size > 5) binding.button6.text =
-            q_list[shuffled_list[5]] else binding.button6.visibility = View.INVISIBLE
+            qlist[shuffled_list[5]] else binding.button6.visibility = View.INVISIBLE
 
         //ボタンを押したときのonClickを発動
         binding.button1.setOnClickListener { onClick(shuffled_list[0], 1) }

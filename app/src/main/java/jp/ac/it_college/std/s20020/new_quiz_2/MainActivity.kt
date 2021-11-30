@@ -1,17 +1,13 @@
 package jp.ac.it_college.std.s20020.new_quiz_2
 
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.lifecycleScope
 import jp.ac.it_college.std.s20020.new_quiz_2.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -22,7 +18,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.URL
-import kotlin.time.DurationUnit
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -126,7 +122,6 @@ class MainActivity : AppCompatActivity() {
 
             getDate("https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=data")
         }
-        binding.textView.text = oldVersion
 
     }
 
@@ -137,16 +132,11 @@ class MainActivity : AppCompatActivity() {
         //DatabaseHelperオブジェクトを生成
         _helper = DatabaseHelper(this)
 
-
-
-
-
-
         val rootJSON = JSONArray(result)
-        println(rootJSON)
 
         var i = 0
 
+        //jsonの要素数分まわす。
         while(i < rootJSON.length()){
 
 
@@ -154,19 +144,15 @@ class MainActivity : AppCompatActivity() {
             val question = rootJSON.getJSONObject(i).getString("question")
             val answers = rootJSON.getJSONObject(i).getLong("answers")
             val choices = rootJSON.getJSONObject(i).getJSONArray("choices")
-            val choices_1 = choices[0].toString()
-            val choices_2 = choices[1].toString()
-            val choices_3 = choices[2].toString()
-            val choices_4 = choices[3].toString()
-            val choices_5 = choices[4].toString()
-            val choices_6 = choices[5].toString()
-
+            val choices1 = choices[0].toString()
+            val choices2 = choices[1].toString()
+            val choices3 = choices[2].toString()
+            val choices4 = choices[3].toString()
+            val choices5 = choices[4].toString()
+            val choices6 = choices[5].toString()
 
             //データベース接続オブジェクトを取得
             val db = _helper.writableDatabase
-
-
-
 
             val insert = """INSERT INTO Quiz
             (_id, question, answers, choices_1, choices_2, choices_3,choices_4, choices_5, choices_6)
@@ -180,23 +166,15 @@ class MainActivity : AppCompatActivity() {
             stmt.bindLong(1, id)
             stmt.bindString(2, question)
             stmt.bindLong(3, answers)
-            stmt.bindString(4, choices_1)
-            stmt.bindString(5, choices_2)
-            stmt.bindString(6, choices_3)
-            stmt.bindString(7, choices_4)
-            stmt.bindString(8, choices_5)
-            stmt.bindString(9, choices_6)
-
+            stmt.bindString(4, choices1)
+            stmt.bindString(5, choices2)
+            stmt.bindString(6, choices3)
+            stmt.bindString(7, choices4)
+            stmt.bindString(8, choices5)
+            stmt.bindString(9, choices6)
             stmt.executeInsert()
-
-            i = i + 1
-
+            i += 1
         }
-
-
-
-
-
     }
 
     private fun extedString(stream: InputStream): String {
@@ -205,9 +183,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun next() {
-        var time = 0
-        var score = 0
-
         val intent = Intent(this, Quiz::class.java)
         startActivity(intent)
     }

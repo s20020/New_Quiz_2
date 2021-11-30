@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseHelper(context: Context, ) : SQLiteOpenHelper(
+class DatabaseHelper(context: Context ) : SQLiteOpenHelper(
     context, DATABASE_NAME, null, DATABASE_VIRSION
 ){
     companion object{
@@ -38,7 +38,7 @@ class DatabaseHelper(context: Context, ) : SQLiteOpenHelper(
 
     }
 
-    //DATABASE_VIRSIONが新しくなったときに実行される
+    //バージョンが新しくなったときに実行される
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
 
     }

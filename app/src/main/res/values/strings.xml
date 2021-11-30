@@ -3,5 +3,13 @@
     <string name="start_btn">スタート</string>
     <string name="wait_text">データを取得中。。。</string>
     <string name="num_text">つ選択</string>
+    <string name="result_title">結果発表</string>
+    <string name="text_1">かかった時間</string>
+    <string name="text_2">秒</string>
+    <string name="text_3">１０問中</string>
+    <string name="text_4">問正解</string>
+    <string name="start">スタート</string>
+    <string name="title">１０問クイズ</string>
+    <string name="ok">決定</string>
 
 </resources>
