@@ -1,6 +1,7 @@
 package jp.ac.it_college.std.s20020.new_quiz_2
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.annotation.UiThread
@@ -23,6 +24,7 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
 
 
+    private lateinit var prefs : SharedPreferences
     private lateinit var _helper: DatabaseHelper
 
     private lateinit var binding: ActivityMainBinding
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         binding.startbutton.setOnClickListener(){
             next()
         }
+
+
 
     }
 
@@ -105,21 +109,26 @@ class MainActivity : AppCompatActivity() {
     //自分でつくる
     @UiThread
     private fun getVersionPost(result: String) {
-        var oldVersion = "20211130"
+        //保存する用のインスタンスを生成。
+        val datestore = getSharedPreferences("DataStore", MODE_PRIVATE)
+
+        val oldVersion = datestore.getString("OLD_VERSION", "Nothing")
         println(oldVersion)
-        val newVersion = JSONObject(result).getString("version")
-        println(newVersion)
-        if (newVersion != oldVersion){
+        val Version = JSONObject(result).getString("version")
+        println(Version)
+        if (Version != oldVersion){
+            //        保存する
+            val Version_keep = JSONObject(result).getString("version")
+            val editor = datestore.edit()
+            editor.putString("OLD_VERSION",Version_keep)
+            editor.apply()
+
             _helper = DatabaseHelper(this)
             val db = _helper.writableDatabase
             val delete = """DELETE FROM Quiz;
         """.trimIndent()
             val stmt = db.compileStatement(delete)
             stmt.executeUpdateDelete()
-
-            oldVersion = newVersion
-
-
             getDate("https://script.google.com/macros/s/AKfycbznWpk2m8q6lbLWSS6qaz3uS6j3L4zPwv7CqDEiC433YOgAdaFekGJmjoAO60quMg6l/exec?f=data")
         }
 
